@@ -47,10 +47,18 @@
         {% endif %}
 
         {% if success %}
-            <div class="import-success">
-                Successfully imported {{ imported_count }} diary entries.
-            </div>
-        {% endif %}
+			<div class="import-success">
+				<h3>Import completed successfully.</h3>
+
+				<p>
+					{{ imported_count }} entries imported.
+				</p>
+
+				<p>
+					{{ skipped_count }} duplicate entries skipped.
+				</p>
+			</div>
+		{% endif %}
 
         <form method="POST"
               enctype="multipart/form-data"

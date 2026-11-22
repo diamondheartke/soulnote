@@ -40,3 +40,33 @@ class RegisterForm(UserCreationForm):
             'username': 'Username',
             'first_name': 'Profile Name'
         }
+        
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'username', 'email']
+
+        labels = {
+            'first_name': 'Profile Name',
+            'username': 'Username',
+            'email': 'Email Address',
+        }
+
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'profile-input',
+                'placeholder': 'Your profile name',
+                'maxlength': '100',
+            }),
+            'username': forms.TextInput(attrs={
+                'class': 'profile-input',
+                'placeholder': 'Your username',
+                'maxlength': '150',
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'profile-input',
+                'placeholder': 'Your email address',
+            }),
+        }
+

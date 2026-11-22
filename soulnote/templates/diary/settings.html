@@ -59,62 +59,97 @@
         <!-- Settings content -->
         <main class="settings-content">
 
-            <!-- Profile -->
-            <section class="settings-section" id="profile">
+            
+		<!-- Profile -->
+		<section class="settings-section" id="profile">
 
-                <div class="section-heading">
-                    <div>
-                        <span class="section-icon orange-icon">◉</span>
-                        <h2>Profile</h2>
-                        <p>Manage your personal information.</p>
-                    </div>
-                </div>
+			<div class="section-heading">
+				<div>
+					<span class="section-icon orange-icon">◉</span>
+					<h2>Profile</h2>
+					<p>Manage your personal information.</p>
+				</div>
+			</div>
 
-                <div class="settings-card">
+			<div class="settings-card">
 
-                    <div class="profile-preview">
-                        <div class="profile-avatar">
-                            {{ request.user.first_name|default:request.user.username|first|upper }}
-                        </div>
+				{% if messages %}
+					{% for message in messages %}
+						<div class="profile-success">
+							{{ message }}
+						</div>
+					{% endfor %}
+				{% endif %}
 
-                        <div>
-                            <h3>{{ request.user.first_name|default:request.user.username }}</h3>
-                            <p>@{{ request.user.username }}</p>
-                        </div>
-                    </div>
+				<div class="profile-preview">
+					<div class="profile-avatar">
+						{{ request.user.first_name|default:request.user.username|first|upper }}
+					</div>
 
-                    <div class="setting-item">
-                        <div>
-                            <h4>Profile Name</h4>
-                            <p>Your display name on SoulNote.</p>
-                        </div>
-                        <span class="setting-value">
-                            {{ request.user.first_name|default:"Not set" }}
-                        </span>
-                    </div>
+					<div>
+						<h3>
+							{{ request.user.first_name|default:request.user.username }}
+						</h3>
+						<p>@{{ request.user.username }}</p>
+					</div>
+				</div>
 
-                    <div class="setting-item">
-                        <div>
-                            <h4>Username</h4>
-                            <p>Your unique account identifier.</p>
-                        </div>
-                        <span class="setting-value">
-                            {{ request.user.username }}
-                        </span>
-                    </div>
+				<form method="POST" class="profile-edit-form">
+					{% csrf_token %}
 
-                    <div class="setting-item">
-                        <div>
-                            <h4>Email Address</h4>
-                            <p>Your registered email address.</p>
-                        </div>
-                        <span class="setting-value">
-                            {{ request.user.email|default:"Not provided" }}
-                        </span>
-                    </div>
+					<div class="profile-field">
+						<label for="{{ profile_form.first_name.id_for_label }}">
+							Profile Name
+						</label>
 
-                </div>
-            </section>
+						{{ profile_form.first_name }}
+
+						{% for error in profile_form.first_name.errors %}
+							<p class="profile-error">{{ error }}</p>
+						{% endfor %}
+					</div>
+
+					<div class="profile-field">
+						<label for="{{ profile_form.username.id_for_label }}">
+							Username
+						</label>
+
+						{{ profile_form.username }}
+
+						{% for error in profile_form.username.errors %}
+							<p class="profile-error">{{ error }}</p>
+						{% endfor %}
+					</div>
+
+					<div class="profile-field">
+						<label for="{{ profile_form.email.id_for_label }}">
+							Email Address
+						</label>
+
+						{{ profile_form.email }}
+
+						{% for error in profile_form.email.errors %}
+							<p class="profile-error">{{ error }}</p>
+						{% endfor %}
+					</div>
+
+					{% if profile_form.non_field_errors %}
+						<div class="profile-error">
+							{{ profile_form.non_field_errors }}
+						</div>
+					{% endif %}
+
+					<div class="profile-form-actions">
+						<button type="submit" class="profile-save-button">
+							Save Changes →
+						</button>
+					</div>
+
+				</form>
+
+			</div>
+		</section>
+
 
             <!-- Security and Privacy -->
             <section class="settings-section" id="security">
