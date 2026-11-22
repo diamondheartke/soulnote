@@ -1,0 +1,88 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Import Data — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/settings.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="import-account-container">
+
+    <a href="{% url 'settings' %}" class="settings-back">
+        ← Back to Settings
+    </a>
+
+    <div class="import-account-card">
+
+        <div class="import-icon">↑</div>
+
+        <p class="settings-eyebrow">ACCOUNT MANAGEMENT</p>
+
+        <h1>Restore your story.</h1>
+
+        <p class="import-description">
+            Import a previous SoulNote JSON export and restore
+            your diary entries to this account.
+        </p>
+
+        <div class="import-information">
+            <h3>Before you import</h3>
+            <ul>
+                <li>Only SoulNote JSON exports are supported.</li>
+                <li>Existing diary entries will not be deleted.</li>
+                <li>Imported entries will belong to your current account.</li>
+                <li>Original entry timestamps will be preserved.</li>
+                <li>Duplicate entries are not automatically detected.</li>
+            </ul>
+        </div>
+
+        {% if error %}
+            <div class="import-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if success %}
+            <div class="import-success">
+                Successfully imported {{ imported_count }} diary entries.
+            </div>
+        {% endif %}
+
+        <form method="POST"
+              enctype="multipart/form-data"
+              class="import-form">
+
+            {% csrf_token %}
+
+            <div class="import-file-field">
+                <label for="import_file">Select your SoulNote export</label>
+
+                <input
+                    type="file"
+                    id="import_file"
+                    name="import_file"
+                    accept=".json,application/json"
+                    required
+                >
+
+                <p>JSON files only · Maximum size: 10 MB</p>
+            </div>
+
+            <button type="submit" class="import-submit-button">
+                Import Diary Data →
+            </button>
+
+            <a href="{% url 'settings' %}" class="import-cancel">
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

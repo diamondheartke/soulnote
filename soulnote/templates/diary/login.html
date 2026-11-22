@@ -1,29 +1,99 @@
+
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Log In — SoulNote{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/auth.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-stone-200 p-8 mt-10">
-    <h1 class="text-2xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-    <p class="text-slate-500 text-sm mb-6">Log in to access your private reflections.</p>
 
-    {% if form.errors %}
-        <div class="bg-red-50 text-red-600 p-3 rounded-xl text-sm mb-4">
-            Your username and password didn't match. Please try again.
+<div class="auth-container">
+
+    <!-- Left: Image and introduction -->
+    <section class="auth-visual">
+        <div class="auth-visual-overlay">
+            <span class="auth-symbol">✦ SoulNote</span>
+
+            <div class="auth-message">
+                <p class="auth-eyebrow">A SPACE THAT IS YOURS</p>
+
+                <h1>
+                    Your thoughts.<br>
+                    Your feelings.<br>
+                    Your story.
+                </h1>
+
+                <p>
+                    Some things are easier to understand
+                    when you give them space.
+                </p>
+            </div>
+
+            <span class="auth-visual-footer">
+                Every thought deserves a place.
+            </span>
         </div>
-    {% endif %}
+    </section>
 
-    <form method="POST" class="space-y-4">
-        {% csrf_token %}
-        {{ form.as_p }}
 
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-xl transition mt-4">
-            Log In
-        </button>
-    </form>
+    <!-- Right: Login form -->
+    <section class="auth-form-section">
 
-    <p class="text-center text-sm text-slate-500 mt-6">
-        Don't have an account? <a href="{% url 'register' %}" class="text-indigo-600 font-medium hover:underline">Sign up</a>
-    </p>
+        <div class="auth-form-wrapper">
+
+            <div class="auth-heading">
+                <p class="auth-eyebrow">WELCOME BACK</p>
+
+                <h2>Good to see you again.</h2>
+
+                <p>
+                    Log in to return to your personal space.
+                </p>
+            </div>
+
+
+            {% if form.errors %}
+                <div class="auth-error">
+                    Your username or password is incorrect.
+                    Please try again.
+                </div>
+            {% endif %}
+
+
+            <form method="POST" class="auth-form">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+
+                <button type="submit" class="auth-submit">
+                    Log In <span>→</span>
+                </button>
+            </form>
+
+
+            <div class="auth-divider">
+                <span></span>
+                <p>NEW TO SOULNOTE?</p>
+                <span></span>
+            </div>
+
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="{% url 'register' %}">Create one</a>
+            </p>
+
+        </div>
+
+    </section>
+
 </div>
+
 {% endblock %}

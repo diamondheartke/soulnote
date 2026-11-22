@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>SoulNote | Your Inner Space</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/icons/soulnote-icon.svg' %}">
 
     <link rel="stylesheet" href="{% static 'styles/home.css' %}">
 </head>
@@ -27,16 +28,23 @@
         </div>
 
         <div class="profile">
-            <div class="avatar">
-                {{ username|first|upper }}
-            </div>
+			<div class="avatar">
+				{{ request.user.first_name|default:request.user.username|first|upper }}
+			</div>
 
-            <span>{{ username }}</span>
+			<span>{{ request.user.first_name|default:request.user.username }}</span>
 
-            <a href="{% url 'logout' %}" class="logout">
-                Sign out
-            </a>
-        </div>
+			<a href="{% url 'settings' %}" class="settings-link">
+				⚙ Settings
+			</a>
+
+			<form method="POST" action="{% url 'logout' %}">
+				{% csrf_token %}
+				<button type="submit" class="logout">
+					Sign out
+				</button>
+			</form>
+		</div>
     </nav>
 
 
@@ -49,12 +57,12 @@
 
                 <h1>
                     Welcome back,
-                    <span>{{ username }}</span>.
+                    <span>{{ request.user.first_name|default:request.user.username }}</span>.
                 </h1>
 
                 <p class="welcome-text">
                     Every thought has a place here.
-                    Take a moment, breathe, and let your mind speak.
+                    Take a moment, breathe and let your mind speak.
                 </p>
 
                 <a href="{% url 'diary-space' %}" class="primary-btn">
@@ -104,30 +112,38 @@
         <!-- Main content -->
         <section class="content-grid">
 
-            <!-- Journal form -->
-            <div class="panel journal-panel" id="journal">
+            
+			<!-- Journal navigation panel -->
+			<div class="panel journal-panel" id="journal">
 
-                <div class="panel-heading">
-                    <div>
-                        <p class="eyebrow">YOUR JOURNAL</p>
-                        <h2>What's on your mind?</h2>
-                        <p>There is no right or wrong way to express yourself.</p>
-                    </div>
+				<div class="panel-heading">
+					<div>
+						<p class="eyebrow">YOUR JOURNAL</p>
+						<h2>What's on your mind?</h2>
+						<p>
+							A thought, a feeling or a moment worth remembering.
+							Give your thoughts a place to unfold.
+						</p>
+					</div>
 
-                    <span class="heading-symbol">✎</span>
-                </div>
+					<span class="heading-symbol">✎</span>
+				</div>
 
-                <form method="POST">
-                    {% csrf_token %}
+				<div class="journal-preview">
+					<span class="preview-icon">✦</span>
+					<p class="preview-title">Your private space awaits.</p>
+					<p class="preview-text">
+						Take a moment to reflect, express yourself freely
+						and keep track of your personal journey.
+					</p>
+				</div>
 
-                    {{ form.as_p }}
+				<a href="{% url 'diary-space' %}" class="primary-btn">
+					Open My Journal <span>→</span>
+				</a>
 
-                    <button type="submit" class="primary-btn">
-                        Save entry <span>→</span>
-                    </button>
-                </form>
+			</div>
 
-            </div>
 
 
             <!-- AI companion -->
@@ -143,7 +159,7 @@
 
                 <p>
                     Sometimes writing isn't enough.
-                    Talk through your thoughts, explore your feelings,
+                    Talk through your thoughts, explore your feelings
                     and gain another perspective.
                 </p>
 
@@ -196,7 +212,7 @@
                         Your journal is waiting.
                         Write your first entry whenever you're ready.
                     </p>
-                    <a href="#journal">Create your first entry →</a>
+                    <a href="{% url 'diary-space' %}">Create your first entry →</a>
                 </div>
 
             {% endif %}

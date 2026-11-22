@@ -1,0 +1,289 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Settings — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/settings.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="settings-container">
+
+    <!-- Header -->
+    <div class="settings-header">
+        <a href="{% url 'home' %}" class="settings-back">
+            ← Back to Home
+        </a>
+
+        <p class="settings-eyebrow">PERSONALIZE YOUR EXPERIENCE</p>
+        <h1>Settings</h1>
+        <p>Manage your account, privacy and personal preferences.</p>
+    </div>
+
+    <div class="settings-layout">
+
+        <!-- Sidebar -->
+        <aside class="settings-sidebar">
+
+            <p class="sidebar-label">PREFERENCES</p>
+
+            <a href="#profile" class="settings-nav active">
+                <span>◉</span> Profile
+            </a>
+
+            <a href="#security" class="settings-nav">
+                <span>♢</span> Security & Privacy
+            </a>
+
+            <a href="#display" class="settings-nav">
+                <span>◐</span> Display
+            </a>
+
+            <a href="#notifications" class="settings-nav">
+                <span>♧</span> Notifications
+            </a>
+
+            <div class="sidebar-divider"></div>
+
+            <p class="sidebar-label">ACCOUNT</p>
+
+            <a href="#account" class="settings-nav">
+                <span>⚙</span> Account Management
+            </a>
+
+        </aside>
+
+        <!-- Settings content -->
+        <main class="settings-content">
+
+            <!-- Profile -->
+            <section class="settings-section" id="profile">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="section-icon orange-icon">◉</span>
+                        <h2>Profile</h2>
+                        <p>Manage your personal information.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="profile-preview">
+                        <div class="profile-avatar">
+                            {{ request.user.first_name|default:request.user.username|first|upper }}
+                        </div>
+
+                        <div>
+                            <h3>{{ request.user.first_name|default:request.user.username }}</h3>
+                            <p>@{{ request.user.username }}</p>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Profile Name</h4>
+                            <p>Your display name on SoulNote.</p>
+                        </div>
+                        <span class="setting-value">
+                            {{ request.user.first_name|default:"Not set" }}
+                        </span>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Username</h4>
+                            <p>Your unique account identifier.</p>
+                        </div>
+                        <span class="setting-value">
+                            {{ request.user.username }}
+                        </span>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Email Address</h4>
+                            <p>Your registered email address.</p>
+                        </div>
+                        <span class="setting-value">
+                            {{ request.user.email|default:"Not provided" }}
+                        </span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Security and Privacy -->
+            <section class="settings-section" id="security">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="section-icon blue-icon">♢</span>
+                        <h2>Security & Privacy</h2>
+                        <p>Protect your account and personal reflections.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Password</h4>
+                            <p>Keep your account protected with a strong password.</p>
+                        </div>
+                        <span class="coming-soon">Password management</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Login Sessions</h4>
+                            <p>Manage devices and active account sessions.</p>
+                        </div>
+                        <span class="coming-soon">Coming soon</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Diary Privacy</h4>
+                            <p>Your diary entries are associated with your account.</p>
+                        </div>
+                        <span class="privacy-status">Private</span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Display -->
+            <section class="settings-section" id="display">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="section-icon purple-icon">◐</span>
+                        <h2>Display</h2>
+                        <p>Customize how SoulNote looks and feels.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Appearance</h4>
+                            <p>Choose between light and dark themes.</p>
+                        </div>
+                        <span class="coming-soon">Coming soon</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Reading Experience</h4>
+                            <p>Customize your preferred reading appearance.</p>
+                        </div>
+                        <span class="coming-soon">Coming soon</span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Notifications -->
+            <section class="settings-section" id="notifications">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="section-icon red-icon">♧</span>
+                        <h2>Notifications</h2>
+                        <p>Control how SoulNote communicates with you.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Journal Reminders</h4>
+                            <p>Receive reminders to make time for reflection.</p>
+                        </div>
+                        <span class="coming-soon">Coming soon</span>
+                    </div>
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>AI Companion Updates</h4>
+                            <p>Manage future companion notifications.</p>
+                        </div>
+                        <span class="coming-soon">Coming soon</span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Account -->
+            <section class="settings-section" id="account">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="section-icon orange-icon">⚙</span>
+                        <h2>Account Management</h2>
+                        <p>Manage your SoulNote account.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+
+                    <div class="setting-item">
+                        <div>
+                            <h4>Account Status</h4>
+                            <p>Your SoulNote account is currently active.</p>
+                        </div>
+                        <span class="privacy-status">Active</span>
+                    </div>
+                    
+                    <div class="setting-item">
+						<div>
+							<h4>Export Your Data</h4>
+							<p>
+								Download a copy of your profile and diary entries
+								in portable JSON format.
+							</p>
+						</div>
+
+						<a href="{% url 'export-data' %}" class="export-data-link">
+							<span>↓</span> Export Data
+						</a>
+					</div>
+					
+					<div class="setting-item">
+						<div>
+							<h4>Import Your Data</h4>
+							<p>
+								Restore diary entries from a previous SoulNote JSON export.
+							</p>
+						</div>
+
+						<a href="{% url 'import-data' %}" class="import-data-link">
+							<span>↑</span> Import Data
+						</a>
+					</div>
+
+                    <div class="setting-item">
+						<div>
+							<h4>Delete Account</h4>
+							<p>Permanently remove your account and associated diary entries.</p>
+						</div>
+
+						<a href="{% url 'delete-account' %}" class="delete-account-link">
+							Delete Account →
+						</a>
+					</div>
+
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+{% endblock %}

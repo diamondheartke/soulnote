@@ -18,9 +18,12 @@
             <span>←</span> Back to Home
         </a>
 
-        <a href="{% url 'logout' %}" class="logout-button">
-            Log Out
-        </a>
+        <form method="POST" action="{% url 'logout' %}">
+			{% csrf_token %}
+			<button type="submit" class="logout-button">
+				Log Out
+			</button>
+		</form>
     </div>
 
     <!-- New Entry -->

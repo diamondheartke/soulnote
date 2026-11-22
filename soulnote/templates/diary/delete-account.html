@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Delete Account — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/settings.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="delete-account-container">
+
+    <a href="{% url 'settings' %}" class="settings-back">
+        ← Back to Settings
+    </a>
+
+    <div class="delete-account-card">
+
+        <div class="delete-warning-icon">!</div>
+
+        <p class="settings-eyebrow">ACCOUNT MANAGEMENT</p>
+
+        <h1>Delete your account?</h1>
+
+        <p class="delete-description">
+            This action is permanent. Once your account is deleted,
+            you will lose access to your SoulNote account and all
+            associated diary entries.
+        </p>
+
+        <div class="delete-consequences">
+            <h3>What will be deleted?</h3>
+
+            <ul>
+                <li>Your profile and account information</li>
+                <li>All your saved diary entries</li>
+                <li>Your associated account data</li>
+            </ul>
+        </div>
+
+        {% if error %}
+            <div class="delete-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" class="delete-account-form">
+            {% csrf_token %}
+
+            <div class="delete-field">
+                <label for="password">Current password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your current password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div class="delete-field">
+                <label for="confirmation">
+                    Type DELETE to confirm
+                </label>
+                <input
+                    type="text"
+                    id="confirmation"
+                    name="confirmation"
+                    placeholder="DELETE"
+                    required
+                    autocomplete="off"
+                >
+            </div>
+
+            <button type="submit" class="delete-confirm-button">
+                Permanently Delete Account
+            </button>
+
+            <a href="{% url 'settings' %}" class="delete-cancel">
+                Cancel and keep my account
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,8 +1,18 @@
+# diary/models.py
+
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import User
 
 class DiaryEntry(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+	entry_uuid = models.UUIDField(
+		default=uuid.uuid4,
+		editable=False,
+		null=True
+	)
+	
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='diary_entries')
 	
 	content = models.TextField()
 	detected_emotions = models.CharField(max_length=50, blank=True, null=True)
@@ -10,11 +20,19 @@ class DiaryEntry(models.Model):
 	
 	ip_address = models.GenericIPAddressField(blank=True, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
 	
 	class Meta:
 		# Orders queries newest-first by default
 		ordering = ['-created_at']
 		verbose_name_plural = "Diary Entries"
+		
+		constraints = [
+			models.UniqueConstraint(
+				fields=['user', 'entry_uuid'],
+				name='unique_entry_uuid_per_user'
+			)
+		]
 		
 	def __str__(self):
 		# Controls how the entry is labeled in Django's admin panel and shell
