@@ -1,0 +1,135 @@
+
+:root {
+    --orange: #F28B42;
+    --blue: #5479C7;
+    --red: #E66B68;
+    --dark: #242431;
+    --muted: #777789;
+    --background: #FAF9F7;
+    --white: #FFFFFF;
+    --border: #EEECEA;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--background);
+    color: var(--dark);
+}
+
+/* Navbar */
+
+.navbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+}
+
+.navbar-inner {
+    max-width: 1100px;
+    margin: auto;
+    padding: 17px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--dark);
+    text-decoration: none;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.brand-icon {
+    color: var(--orange);
+    font-size: 25px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a,
+.logout-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color .2s ease;
+}
+
+.nav-links a:hover,
+.logout-link:hover {
+    color: var(--orange);
+}
+
+.nav-links form {
+    display: inline;
+}
+
+.logout-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-links .signup-link {
+    padding: 10px 17px;
+    border-radius: 8px;
+    background: linear-gradient(110deg, var(--orange), var(--red));
+    color: white;
+}
+
+.signup-link:hover {
+    color: white;
+    opacity: .9;
+}
+
+/* Main */
+
+.main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 35px 25px;
+}
+
+/* Footer */
+
+.site-footer {
+    padding: 20px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+}
+
+@media (max-width: 600px) {
+    .navbar-inner {
+        padding: 15px;
+    }
+
+    .nav-links {
+        gap: 15px;
+    }
+
+    .main-content {
+        padding: 25px 15px;
+    }
+}

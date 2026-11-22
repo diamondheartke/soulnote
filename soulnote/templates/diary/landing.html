@@ -1,0 +1,312 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SoulNote — A personal space to write, reflect, and understand yourself.">
+    <title>SoulNote — The Inner Space</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'styles/landing.css' %}">
+</head>
+
+<body>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="ambient ambient-three"></div>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <a href="/" class="brand">
+            <span class="brand-icon">s.</span>
+            <span>SoulNote</span>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#about">Our idea</a>
+            <a href="#experience">Experience</a>
+            <a href="#vision">The vision</a>
+        </nav>
+
+        <div class="nav-actions">
+            <a href="/login/" class="login-link">Sign in</a>
+            <a href="/register/" class="nav-cta">Get started <span>↗</span></a>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    <span class="pulse"></span>
+                    A different kind of journaling
+                </div>
+
+                <h1>
+                    Your thoughts<br>
+                    deserve a place<br>
+                    <span class="gradient-text">to become something.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Some thoughts are difficult to explain. Some feelings
+                    take time to understand. SoulNote gives you a space
+                    to express them, revisit them, and perhaps discover
+                    something you hadn't noticed before.
+                </p>
+
+                <div class="hero-actions">
+                    <a href="/register/" class="primary-btn">
+                        Begin your journey <span>↗</span>
+                    </a>
+                    <a href="#about" class="secondary-btn">
+                        Discover SoulNote <span>↓</span>
+                    </a>
+                </div>
+
+                <div class="hero-note">
+                    <div class="note-avatars">
+                        <span>✦</span>
+                        <span>♡</span>
+                        <span>✧</span>
+                    </div>
+                    <p>A little space. A little clarity. Entirely yours.</p>
+                </div>
+            </div>
+
+            <!-- Decorative journal preview -->
+            <div class="hero-art">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+
+                <div class="floating-word word-one">feel</div>
+                <div class="floating-word word-two">reflect</div>
+                <div class="floating-word word-three">be</div>
+
+                <div class="journal-card">
+                    <div class="journal-top">
+                        <span class="journal-brand">soulnote.</span>
+                        <span class="journal-date">A MOMENT TO SELF</span>
+                    </div>
+
+                    <div class="journal-symbol">✳</div>
+
+                    <p class="journal-caption">A thought for today</p>
+
+                    <h2>
+                        "Maybe I don't need
+                        to have everything
+                        figured out."
+                    </h2>
+
+                    <div class="journal-divider"></div>
+
+                    <p class="journal-footer">
+                        Sometimes, understanding begins
+                        with simply being honest.
+                    </p>
+
+                    <div class="journal-bottom">
+                        <span>YOUR PRIVATE SPACE</span>
+                        <span>01 — ∞</span>
+                    </div>
+                </div>
+
+                <div class="mini-card mini-card-one">
+                    <span>✦</span>
+                    <div>
+                        <strong>Reflect</strong>
+                        <small>Take a moment</small>
+                    </div>
+                </div>
+
+                <div class="mini-card mini-card-two">
+                    <span>♡</span>
+                    <div>
+                        <strong>Express</strong>
+                        <small>Without judgment</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Introduction -->
+        <section class="intro-section" id="about">
+            <div class="section-label">
+                <span>01</span> THE IDEA
+            </div>
+
+            <div class="intro-content">
+                <h2>
+                    Not everything needs
+                    <span>an answer.</span>
+                    Sometimes, it just needs
+                    to be understood.
+                </h2>
+
+                <p>
+                    We write for different reasons. To remember something,
+                    to process an experience, or simply to get a thought
+                    out of our heads.
+
+                    I've been curious about what happens when we combine
+                    that simple human habit with artificial intelligence.
+                    Could technology help us recognise patterns in our
+                    thoughts and understand our experiences differently?
+
+                    SoulNote is my exploration of that possibility.
+                </p>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="experience-section" id="experience">
+            <div class="section-heading">
+                <div class="section-label">
+                    <span>02</span> THE EXPERIENCE
+                </div>
+                <h2>A space to <span>be yourself.</span></h2>
+                <p>
+                    More than writing things down. A place to explore
+                    what's happening within.
+                </p>
+            </div>
+
+            <div class="feature-grid">
+
+                <article class="feature-card feature-orange">
+                    <div class="feature-icon">✎</div>
+                    <span class="feature-number">01 / WRITE</span>
+                    <h3>Let it out.</h3>
+                    <p>
+                        Your thoughts don't have to be organised,
+                        beautiful, or even make complete sense.
+                        Just write. It's your space.
+                    </p>
+                    <div class="feature-decoration">✧</div>
+                </article>
+
+                <article class="feature-card feature-blue">
+                    <div class="feature-icon">◉</div>
+                    <span class="feature-number">02 / UNDERSTAND</span>
+                    <h3>Look a little deeper.</h3>
+                    <p>
+                        I'm exploring how AI can help interpret
+                        emotional expressions and uncover themes
+                        that might otherwise go unnoticed.
+                    </p>
+                    <div class="feature-decoration">◎</div>
+                </article>
+
+                <article class="feature-card feature-red">
+                    <div class="feature-icon">♡</div>
+                    <span class="feature-number">03 / REFLECT</span>
+                    <h3>See another perspective.</h3>
+                    <p>
+                        Thoughtful AI reflections could help you
+                        revisit experiences, connect ideas, and
+                        consider things differently.
+                    </p>
+                    <div class="feature-decoration">♡</div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- AI Vision -->
+        <section class="vision-section" id="vision">
+            <div class="vision-visual">
+                <div class="vision-circle circle-a"></div>
+                <div class="vision-circle circle-b"></div>
+                <div class="vision-center">
+                    <span>✧</span>
+                    <strong>thoughts</strong>
+                    <small>meet reflection</small>
+                </div>
+                <div class="vision-tag tag-a">Memory</div>
+                <div class="vision-tag tag-b">Context</div>
+                <div class="vision-tag tag-c">Reflection</div>
+            </div>
+
+            <div class="vision-content">
+                <div class="section-label">
+                    <span>03</span> THE AI VISION
+                </div>
+
+                <h2>
+                    What if your diary
+                    could remember
+                    <span>the bigger picture?</span>
+                </h2>
+
+                <p>
+                    Imagine writing something today and having an AI
+                    that can connect it to a thought you recorded weeks
+                    ago.
+
+                    Not because it knows everything about you, but
+                    because it has access to relevant context that
+                    helps it understand the conversation better.
+                </p>
+
+                <p>
+                    I'm exploring Large Language Models, contextual
+                    memory, and Retrieval-Augmented Generation (RAG)
+                    to see how this might work in practice.
+                </p>
+
+                <a href="/register/" class="text-link">
+                    Explore your own space <span>↗</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Closing CTA -->
+        <section class="closing-section">
+            <div class="closing-decoration">✳</div>
+            <span class="closing-label">A NOTE TO YOURSELF</span>
+
+            <h2>
+                You don't have to
+                figure it all out
+                <em>today.</em>
+            </h2>
+
+            <p>
+                Start with a thought. See where it takes you.
+            </p>
+
+            <a href="/register/" class="closing-btn">
+                Create your space <span>↗</span>
+            </a>
+
+            <div class="closing-small">
+                Your thoughts. Your story. Still unfolding.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <a href="/" class="brand">
+            <span class="brand-icon">s.</span>
+            <span>SoulNote</span>
+        </a>
+
+        <p>Made with curiosity, for the beautifully complicated human mind.</p>
+
+        <span class="footer-copy">© 2026 SoulNote</span>
+    </footer>
+
+</body>
+</html>

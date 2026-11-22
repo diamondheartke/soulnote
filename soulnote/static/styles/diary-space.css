@@ -1,0 +1,225 @@
+
+/* SoulNote Diary Space */
+
+.diary-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 35px 20px;
+    color: #242431;
+}
+
+/* Header */
+
+.diary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.back-button,
+.logout-button {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .2s ease;
+}
+
+.back-button {
+    color: #5479C7;
+}
+
+.back-button span {
+    margin-right: 6px;
+    font-size: 18px;
+}
+
+.back-button:hover {
+    color: #f28b42;
+    transform: translateX(-3px);
+}
+
+.logout-button {
+    color: #e66b68;
+}
+
+.logout-button:hover {
+    color: #c94c4c;
+}
+
+/* Reflection card */
+
+.reflection-card {
+    background: #ffffff;
+    border: 1px solid #eeecea;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 18px rgba(36, 36, 49, .035);
+}
+
+.reflection-heading {
+    margin-bottom: 25px;
+}
+
+.reflection-heading h1 {
+    font-size: 23px;
+    font-weight: 700;
+    color: #242431;
+    margin-bottom: 8px;
+}
+
+.reflection-heading p {
+    font-size: 13px;
+    color: #777789;
+}
+
+/* Form */
+
+.reflection-card textarea,
+.reflection-card input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #eeecea;
+    border-radius: 10px;
+    background: #faf9f7;
+    font-family: inherit;
+    font-size: 14px;
+    color: #242431;
+    outline: none;
+    transition: .2s ease;
+}
+
+.reflection-card textarea {
+    min-height: 180px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.reflection-card textarea:focus,
+.reflection-card input:focus {
+    border-color: #5479c7;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(84, 121, 199, .09);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+.save-button {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 9px;
+    color: #ffffff;
+    background: linear-gradient(110deg, #f28b42, #e66b68);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.save-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(242, 139, 66, .2);
+}
+
+/* Entries */
+
+.entries-section h2 {
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.entry-card {
+    background: #ffffff;
+    border: 1px solid #eeecea;
+    border-radius: 13px;
+    padding: 22px;
+    margin-bottom: 14px;
+    transition: .2s ease;
+}
+
+.entry-card:hover {
+    border-color: #e4d5c8;
+    box-shadow: 0 5px 18px rgba(36, 36, 49, .04);
+}
+
+.entry-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    color: #9999a5;
+    font-size: 11px;
+}
+
+.emotion-tag {
+    padding: 5px 11px;
+    border-radius: 30px;
+    background: #eef2ff;
+    color: #5479c7;
+    font-weight: 600;
+}
+
+.entry-content {
+    color: #555566;
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+/* Empty state */
+
+.empty-state {
+    padding: 45px 20px;
+    text-align: center;
+    border: 1px dashed #e5dfd8;
+    border-radius: 13px;
+    background: #ffffff80;
+}
+
+.empty-state span {
+    font-size: 30px;
+    color: #f28b42;
+}
+
+.empty-state h3 {
+    margin: 12px 0 7px;
+    font-size: 17px;
+}
+
+.empty-state p {
+    color: #9999a5;
+    font-size: 13px;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+    .diary-container {
+        padding: 22px 14px;
+    }
+
+    .reflection-card {
+        padding: 22px 17px;
+    }
+
+    .reflection-heading h1 {
+        font-size: 20px;
+    }
+
+    .entry-card {
+        padding: 17px;
+    }
+
+    .entry-meta {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

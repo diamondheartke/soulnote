@@ -1,0 +1,77 @@
+Folder PATH listing
+Volume serial number is 52BE-4F67
+C:.
+|   .gitignore
+|   README.md
+|   soulnote.geany
+|   tree.txt
+|   
+\---soulnote
+    |   db.sqlite3
+    |   manage.py
+    |   pyvenv.cfg
+    |   
+    +---diary
+    |   |   admin.py
+    |   |   apps.py
+    |   |   forms.py
+    |   |   models.py
+    |   |   tests.py
+    |   |   urls.py
+    |   |   views.py
+    |   |   __init__.py
+    |   |   
+    |   +---migrations
+    |   |   |   0001_initial.py
+    |   |   |   0002_diaryentry_ip_address_diaryentry_user.py
+    |   |   |   __init__.py
+    |   |   |   
+    |   |   \---__pycache__
+    |   |           0001_initial.cpython-38.pyc
+    |   |           0002_diaryentry_ip_address_diaryentry_user.cpython-38.pyc
+    |   |           __init__.cpython-38.pyc
+    |   |           
+    |   \---__pycache__
+    |           admin.cpython-38.pyc
+    |           apps.cpython-38.pyc
+    |           forms.cpython-38.pyc
+    |           models.cpython-38.pyc
+    |           urls.cpython-38.pyc
+    |           views.cpython-38.pyc
+    |           __init__.cpython-38.pyc
++---Scripts
+    |       activate
+    |       activate.bat
+    |       Activate.ps1
+    |       deactivate.bat
+    |       django-admin.exe
+    |       easy_install-3.8.exe
+    |       easy_install.exe
+    |       pip.exe
+    |       pip3.8.exe
+    |       pip3.exe
+    |       python.exe
+    |       pythonw.exe
+    |       sqlformat.exe
+    |       
+    +---soulnote
+    |   |   asgi.py
+    |   |   settings.py
+    |   |   urls.py
+    |   |   wsgi.py
+    |   |   __init__.py
+    |   |   
+    |   \---__pycache__
+    |           settings.cpython-38.pyc
+    |           urls.cpython-38.pyc
+    |           wsgi.cpython-38.pyc
+    |           __init__.cpython-38.pyc
+    |           
+    \---templates
+        |   base.html
+        |   
+        \---diary
+                home.html
+                login.html
+                register.html
+                

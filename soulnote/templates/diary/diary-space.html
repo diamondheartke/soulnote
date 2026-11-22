@@ -1,0 +1,87 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Today's Reflection — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/diary-space.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="diary-container">
+
+    <!-- Header -->
+    <div class="diary-header">
+        <a href="{% url 'home' %}" class="back-button">
+            <span>←</span> Back to Home
+        </a>
+
+        <a href="{% url 'logout' %}" class="logout-button">
+            Log Out
+        </a>
+    </div>
+
+    <!-- New Entry -->
+    <section class="reflection-card">
+
+        <div class="reflection-heading">
+            <h1>How are you feeling today, {{ request.user.username }}?</h1>
+            <p>Write freely. Your thoughts are private to your account.</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {{ form.content }}
+
+            <div class="form-actions">
+                <button type="submit" class="save-button">
+                    Save & Reflect →
+                </button>
+            </div>
+        </form>
+
+    </section>
+
+    <!-- Past Entries -->
+    <section class="entries-section">
+
+        <h2>Your Past Entries</h2>
+
+        {% for entry in entries %}
+
+            <article class="entry-card">
+
+                <div class="entry-meta">
+                    <span>
+                        {{ entry.created_at|date:"F j, Y · g:i A" }}
+                    </span>
+
+                    {% if entry.detected_emotion %}
+                        <span class="emotion-tag">
+                            {{ entry.detected_emotion }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <p class="entry-content">{{ entry.content }}</p>
+
+            </article>
+
+        {% empty %}
+
+            <div class="empty-state">
+                <span>✧</span>
+                <h3>Your story starts here.</h3>
+                <p>No entries yet. Write your first reflection above.</p>
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

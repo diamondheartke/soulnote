@@ -1,47 +1,215 @@
-{% extends "base.html" %}
 
-{% block title %}Today's Reflection — SoulNote{% endblock %}
+{% load static %}
 
-{% block content %}
-<div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 mb-10">
-    <div class="flex justify-between items-center mb-4">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-900">How are you feeling today, {{ request.user.username }}?</h1>
-            <p class="text-slate-500 text-sm">Write freely. Your thoughts are private to your account.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SoulNote | Your Inner Space</title>
+
+    <link rel="stylesheet" href="{% static 'styles/home.css' %}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="brand">
+            <span class="brand-icon">✦</span>
+            SoulNote
+        </a>
+
+        <div class="nav-links">
+            <a href="#journal">My Journal</a>
+            <a href="#companion">AI Companion</a>
+            <a href="#recent">Recent Entries</a>
         </div>
-        <a href="{% url 'admin:logout' %}" class="text-sm text-red-600 hover:underline">Log Out</a>
-    </div>
 
-    <form method="POST" class="space-y-4">
-        {% csrf_token %}
-        {{ form.content }}
-
-        <div class="flex justify-end">
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-2.5 rounded-xl transition">
-                Save & Reflect
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Past Entries Feed -->
-<div class="space-y-4">
-    <h2 class="text-lg font-semibold text-slate-800">Your Past Entries</h2>
-    
-    {% for entry in entries %}
-        <div class="bg-white rounded-xl border border-stone-200 p-6 shadow-sm">
-            <div class="flex justify-between items-center text-xs text-slate-400 mb-3">
-                <span>{{ entry.created_at|date:"F j, Y • g:i A" }} (IP: {{ entry.ip_address|default:"Unknown" }})</span>
-                {% if entry.detected_emotion %}
-                    <span class="bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-medium">
-                        {{ entry.detected_emotion }}
-                    </span>
-                {% endif %}
+        <div class="profile">
+            <div class="avatar">
+                {{ username|first|upper }}
             </div>
-            <p class="text-slate-700 whitespace-pre-line leading-relaxed">{{ entry.content }}</p>
+
+            <span>{{ username }}</span>
+
+            <a href="{% url 'logout' %}" class="logout">
+                Sign out
+            </a>
         </div>
-    {% empty %}
-        <p class="text-slate-400 text-sm italic">No entries yet. Write your first reflection above!</p>
-    {% endfor %}
-</div>
-{% endblock %}
+    </nav>
+
+
+    <main class="dashboard">
+
+        <!-- Welcome section -->
+        <section class="welcome">
+            <div>
+                <p class="eyebrow">YOUR PERSONAL SPACE</p>
+
+                <h1>
+                    Welcome back,
+                    <span>{{ username }}</span>.
+                </h1>
+
+                <p class="welcome-text">
+                    Every thought has a place here.
+                    Take a moment, breathe, and let your mind speak.
+                </p>
+
+                <a href="{% url 'diary-space' %}" class="primary-btn">
+                    Write something <span>↗</span>
+                </a>
+            </div>
+
+            <div class="welcome-art">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="sun"></div>
+                <div class="floating-note">✦</div>
+            </div>
+        </section>
+
+
+        <!-- Overview -->
+        <section class="overview">
+
+            <div class="overview-card">
+                <span class="card-icon orange">✎</span>
+                <div>
+                    <p>Total journal entries</p>
+                    <h2>{{ entries|length }}</h2>
+                </div>
+            </div>
+
+            <div class="overview-card">
+                <span class="card-icon blue">♡</span>
+                <div>
+                    <p>Your personal space</p>
+                    <h2>Just yours</h2>
+                </div>
+            </div>
+
+            <div class="overview-card">
+                <span class="card-icon red">✧</span>
+                <div>
+                    <p>Your next step</p>
+                    <h2>Keep exploring</h2>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content-grid">
+
+            <!-- Journal form -->
+            <div class="panel journal-panel" id="journal">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">YOUR JOURNAL</p>
+                        <h2>What's on your mind?</h2>
+                        <p>There is no right or wrong way to express yourself.</p>
+                    </div>
+
+                    <span class="heading-symbol">✎</span>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    {{ form.as_p }}
+
+                    <button type="submit" class="primary-btn">
+                        Save entry <span>→</span>
+                    </button>
+                </form>
+
+            </div>
+
+
+            <!-- AI companion -->
+            <div class="panel companion-panel" id="companion">
+
+                <div class="companion-decoration">✦</div>
+
+                <p class="eyebrow">YOUR AI COMPANION</p>
+
+                <div class="companion-avatar">✧</div>
+
+                <h2>A space to be heard.</h2>
+
+                <p>
+                    Sometimes writing isn't enough.
+                    Talk through your thoughts, explore your feelings,
+                    and gain another perspective.
+                </p>
+
+                <div class="coming-soon">
+                    <span class="status-dot"></span>
+                    AI conversations — coming soon
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Recent entries -->
+        <section class="recent-section" id="recent">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">YOUR JOURNEY</p>
+                    <h2>Recent thoughts</h2>
+                </div>
+
+                <span class="entry-count">
+                    {{ entries|length }} entries
+                </span>
+            </div>
+
+            {% if entries %}
+
+                <div class="entries-list">
+
+                    {% for entry in entries %}
+                        <article class="entry-card">
+                            <div class="entry-marker">✦</div>
+
+                            <div class="entry-content">
+                                <p>{{ entry }}</p>
+                            </div>
+                        </article>
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+                    <span>✧</span>
+                    <h3>Your story starts here.</h3>
+                    <p>
+                        Your journal is waiting.
+                        Write your first entry whenever you're ready.
+                    </p>
+                    <a href="#journal">Create your first entry →</a>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <footer>
+            <p>SoulNote — Your thoughts, your story, still unfolding.</p>
+            <span>Made for the moments that matter.</span>
+        </footer>
+
+    </main>
+
+</body>
+</html>
