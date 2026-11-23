@@ -39,7 +39,7 @@
                 {% if user.is_authenticated %}
 
                     <a href="{% url 'home' %}">Home</a>
-
+					<a href="{% url 'archive' %}">My Archive</a>
                     <form action="{% url 'logout' %}" method="post">
                         {% csrf_token %}
                         <button type="submit" class="logout-link">

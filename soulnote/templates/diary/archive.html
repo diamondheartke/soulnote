@@ -1,0 +1,102 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Archive — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/archive.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="archive-container">
+
+    <div class="archive-header">
+
+        <a href="{% url 'home' %}" class="archive-back">
+            ← Back to Home
+        </a>
+
+        <p class="eyebrow">YOUR PERSONAL COLLECTION</p>
+
+        <h1>My Archive<span>.</span></h1>
+
+        <p class="archive-description">
+            Every thought you've chosen to preserve,
+            gathered in one private space.
+        </p>
+
+        <div class="archive-stat">
+            <span>{{ entry_count }}</span>
+            <p>Saved journal entries</p>
+        </div>
+
+    </div>
+
+    <section class="archive-list">
+
+        {% for entry in entries %}
+
+            <article class="archive-card">
+
+                <div class="archive-card-header">
+
+                    <div>
+                        <span class="archive-date">
+                            {{ entry.created_at|date:"F j, Y · g:i A" }}
+                        </span>
+
+                        {% if entry.detected_emotions %}
+                            <span class="archive-emotion">
+                                {{ entry.detected_emotions }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <span class="archive-revision-count">
+                        {{ entry.revisions.count }} preserved
+                    </span>
+
+                </div>
+
+                <p class="archive-entry-content">
+                    {{ entry.content|truncatewords:40 }}
+                </p>
+
+                <div class="archive-card-footer">
+
+                    <a href="{% url 'entry-history' entry.entry_uuid %}">
+                        View history →
+                    </a>
+
+                    <a href="{% url 'edit-entry' entry.entry_uuid %}">
+                        Edit entry
+                    </a>
+
+                </div>
+
+            </article>
+
+        {% empty %}
+
+            <div class="archive-empty">
+                <span>✧</span>
+                <h2>Your archive is waiting.</h2>
+                <p>
+                    Entries you create will appear here.
+                    Your personal collection starts with your first reflection.
+                </p>
+
+                <a href="{% url 'diary-space' %}">
+                    Write your first entry →
+                </a>
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock %}

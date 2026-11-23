@@ -37,3 +37,35 @@ class DiaryEntry(models.Model):
 	def __str__(self):
 		# Controls how the entry is labeled in Django's admin panel and shell
 		return f"Entry from {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+		
+
+class DiaryEntryRevision(models.Model):
+    entry = models.ForeignKey(
+        DiaryEntry,
+        on_delete=models.CASCADE,
+        related_name='revisions'
+    )
+
+    revision_number = models.PositiveIntegerField()
+
+    content = models.TextField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['revision_number']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['entry', 'revision_number'],
+                name='unique_diary_entry_revision'
+            )
+        ]
+        verbose_name = 'Diary Entry Revision'
+        verbose_name_plural = 'Diary Entry Revisions'
+
+    def __str__(self):
+        return (
+            f"Revision {self.revision_number} "
+            f"of entry {self.entry.entry_uuid}"
+        )
+

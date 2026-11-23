@@ -1,0 +1,219 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Entry History — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/archive.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="history-container">
+
+    <a href="{% url 'archive' %}" class="archive-back">
+        ← Back to My Archive
+    </a>
+
+    <header class="history-header">
+        <p class="eyebrow">YOUR JOURNAL HISTORY</p>
+        <h1>One thought, many moments.</h1>
+        <p>
+            Revisit the versions you've deliberately preserved.
+        </p>
+    </header>
+
+    <section class="history-card">
+
+        <div class="history-top">
+
+            <div>
+                <span class="history-label" id="history-label">
+                    CURRENT VERSION
+                </span>
+
+                <h2>
+                    Your reflection
+                </h2>
+            </div>
+
+            <span class="history-total">
+                {{ version_count }} versions
+            </span>
+
+        </div>
+
+        <div class="history-date" id="history-date">
+            {{ entry.updated_at|date:"F j, Y · g:i A" }}
+        </div>
+
+        <div class="history-content">
+
+            {% for version in versions %}
+
+                <div
+                    class="history-version"
+                    data-version="{{ forloop.counter0 }}"
+                    {% if not version.is_current %}hidden{% endif %}
+                >
+
+                    <p>{{ version.content }}</p>
+
+                    {% if not version.is_current %}
+
+                        <form
+                            method="POST"
+                            action="{% url 'restore-entry-revision' entry.entry_uuid version.revision_id %}"
+                            class="restore-form"
+                            onsubmit="return confirm('Restore this version as your current entry?');"
+                        >
+
+                            {% csrf_token %}
+
+                            <label class="preserve-version-option">
+                                <input
+                                    type="checkbox"
+                                    name="preserve_current"
+                                >
+
+                                <span class="preserve-version-text">
+                                    <strong>Preserve current version first</strong>
+                                    <small>
+                                        Save the version you are replacing
+                                        in the history.
+                                    </small>
+                                </span>
+                            </label>
+
+                            <button type="submit" class="restore-button">
+                                Restore this version →
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="history-slider-section">
+
+            <div class="history-slider-labels">
+                <span>Oldest</span>
+                <span>Current</span>
+            </div>
+
+            <input
+                type="range"
+                id="history-slider"
+                min="0"
+                max="{{ version_count|add:'-1' }}"
+                value="{{ version_count|add:'-1' }}"
+                step="1"
+            >
+
+            <div class="history-navigation">
+
+                <button
+                    type="button"
+                    id="history-previous"
+                    class="history-nav-button"
+                >
+                    ← Previous
+                </button>
+
+                <span id="history-position">
+                    {{ version_count }} / {{ version_count }}
+                </span>
+
+                <button
+                    type="button"
+                    id="history-next"
+                    class="history-nav-button"
+                    disabled
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const slider = document.getElementById('history-slider');
+    const panels = document.querySelectorAll('.history-version');
+
+    const label = document.getElementById('history-label');
+    const date = document.getElementById('history-date');
+
+    const position = document.getElementById('history-position');
+
+    const previous = document.getElementById('history-previous');
+    const next = document.getElementById('history-next');
+
+    const total = panels.length;
+
+    const dates = [
+        {% for version in versions %}
+            "{{ version.saved_at|date:'F j, Y · g:i A'|escapejs }}"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const labels = [
+        {% for version in versions %}
+            {% if version.is_current %}
+                "CURRENT VERSION"
+            {% else %}
+                "PRESERVED VERSION {{ version.number }}"
+            {% endif %}
+            {% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    function showVersion(index) {
+
+        panels.forEach(function (panel) {
+            panel.hidden =
+                Number(panel.dataset.version) !== index;
+        });
+
+        label.textContent = labels[index];
+        date.textContent = dates[index];
+
+        slider.value = index;
+
+        position.textContent =
+            (index + 1) + ' / ' + total;
+
+        previous.disabled = index === 0;
+        next.disabled = index === total - 1;
+    }
+
+    slider.addEventListener('input', function () {
+        showVersion(Number(this.value));
+    });
+
+    previous.addEventListener('click', function () {
+        showVersion(Number(slider.value) - 1);
+    });
+
+    next.addEventListener('click', function () {
+        showVersion(Number(slider.value) + 1);
+    });
+
+    showVersion(total - 1);
+
+});
+</script>
+
+{% endblock %}

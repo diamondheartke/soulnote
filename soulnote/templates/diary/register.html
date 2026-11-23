@@ -59,7 +59,8 @@
             {% if form.errors %}
                 <div class="auth-error">
                     Please review the information below.
-                    Some fields need your attention.
+                    Some fields need your attention. 
+                    {{ form.errors }}
                 </div>
             {% endif %}
 

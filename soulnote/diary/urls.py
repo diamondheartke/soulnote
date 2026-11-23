@@ -13,6 +13,11 @@ from .views import (
 					delete_account_view, 
 					export_data_view,
 					import_data_view,
+					edit_entry_view,
+					delete_entry_view,
+					archive_view,
+					entry_history_view,
+					restore_entry_revision_view,
 				)
 
 urlpatterns = [
@@ -21,8 +26,19 @@ urlpatterns = [
     path('landing-page/', landing_view, name='landing'),
     path('register/', register_view, name='register'),
     path('login/', LoginView.as_view(template_name='diary/login.html'), name='login'),
-    path('diary-space', diary_view, name='diary-space'),
     path('settings/', settings_view, name='settings'),
+    
+    # ---- Diary Space ----
+    path('diary-space', diary_view, name='diary-space'),
+    path('entry/<uuid:entry_uuid>/edit/', edit_entry_view, name='edit-entry'),
+    path('entry/<uuid:entry_uuid>/delete/', delete_entry_view, name='delete-entry'),
+    path('archive/', archive_view, name='archive'),
+	path('entry/<uuid:entry_uuid>/history/', entry_history_view, name='entry-history'),
+	path(
+		'entry/uuid:entry_uuid>/revision/<int:revision_id>/restore/', 
+		restore_entry_revision_view, 
+		name='restore-entry-revision'
+	),
     
     # ---- Delete Account view ----
     path('delete-account', delete_account_view, name='delete-account'),

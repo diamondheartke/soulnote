@@ -1,0 +1,80 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Entry — SoulNote{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/diary-space.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="diary-container edit-entry-container">
+
+    <div class="diary-header">
+        <a href="{% url 'home' %}" class="back-button">
+            <span>←</span> Back to Home
+        </a>
+    </div>
+
+    <section class="reflection-card">
+
+        <div class="reflection-heading">
+            <p class="eyebrow">YOUR JOURNAL</p>
+            <h1>Revisit your thoughts.</h1>
+            <p>
+                You can revise your reflection whenever you need to.
+                Your original entry date will remain unchanged.
+            </p>
+        </div>
+
+        <div class="edit-entry-date">
+            Originally written:
+            {{ entry.created_at|date:"F j, Y · g:i A" }}
+        </div>
+
+        
+		<form method="POST">
+			{% csrf_token %}
+
+			{{ form.content }}
+
+			{% for error in form.content.errors %}
+				<p class="form-error">{{ error }}</p>
+			{% endfor %}
+
+			<label class="preserve-version-option">
+				<input
+					type="checkbox"
+					name="preserve_version"
+				>
+
+				<span class="preserve-version-text">
+					<strong>Preserve this version</strong>
+					<small>
+						Save the current entry in your revision history
+						before applying these changes.
+					</small>
+				</span>
+			</label>
+
+			<div class="form-actions">
+
+				<a href="{% url 'archive' %}" class="cancel-edit-button">
+					Cancel
+				</a>
+
+				<button type="submit" class="save-button">
+					Save Changes →
+				</button>
+
+			</div>
+		</form>
+
+
+    </section>
+
+</div>
+
+{% endblock %}
