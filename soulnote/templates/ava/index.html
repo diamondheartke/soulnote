@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="twilight">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ava | SoulNote</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'images/icons/soulnote-icon.svg' %}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="{% static 'styles/ava/ava.css' %}">
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-top">
+
+            <a href="#" class="brand">
+                <span class="brand-symbol">✦</span>
+                <span>SoulNote</span>
+            </a>
+
+            <button class="icon-button mobile-close"
+                    id="closeSidebar"
+                    aria-label="Close sidebar">
+                ×
+            </button>
+
+            <button class="new-chat-button" id="newChat">
+                <span>＋</span>
+                New conversation
+            </button>
+
+            <div class="sidebar-section">
+                <p class="sidebar-label">YOUR SPACE</p>
+
+                <button class="sidebar-link active">
+                    <span>◈</span>
+                    <span>Chat with Ava</span>
+                </button>
+
+                <button class="sidebar-link" id="historyButton">
+                    <span>◷</span>
+                    <span>Recent conversations</span>
+                </button>
+            </div>
+
+            <div class="conversation-section">
+                <p class="sidebar-label">RECENT</p>
+
+                <div class="conversation-list" id="conversationList">
+                    <p class="empty-history">
+                        Your conversations will appear here.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- APPEARANCE CONTROL -->
+        <div class="appearance-panel">
+
+            <div class="appearance-heading">
+                <span class="appearance-icon">◐</span>
+                <span>Appearance</span>
+            </div>
+
+            <div class="theme-control">
+
+                <div class="theme-labels">
+                    <span>Twilight</span>
+                    <span>Daylight</span>
+                    <span>Cyber</span>
+                </div>
+
+                <input
+                    type="range"
+                    id="themeSlider"
+                    min="0"
+                    max="2"
+                    step="1"
+                    value="0"
+                    aria-label="Choose Ava's appearance"
+                >
+
+                <div class="theme-dots">
+                    <span class="theme-dot active"></span>
+                    <span class="theme-dot"></span>
+                    <span class="theme-dot"></span>
+                </div>
+
+            </div>
+
+            <p class="appearance-description" id="themeDescription">
+                Quiet, atmospheric and reflective.
+            </p>
+
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="footer-avatar">D</div>
+
+            <div class="footer-user">
+                <strong>SoulNote</strong>
+                <span>Your personal space</span>
+            </div>
+
+            <button class="icon-button" title="Settings">
+                ⚙
+            </button>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CHAT -->
+    <main class="main-content">
+
+        <header class="chat-header">
+
+            <div class="header-left">
+
+                <button class="icon-button menu-button"
+                        id="openSidebar"
+                        aria-label="Open sidebar">
+                    ☰
+                </button>
+
+                <div class="ava-avatar">
+                    <span>✧</span>
+                    <i class="avatar-status"></i>
+                </div>
+
+                <div class="header-identity">
+                    <h2>Ava</h2>
+                    <span>Your AI companion</span>
+                </div>
+
+            </div>
+
+            <div class="header-actions">
+
+                <span class="connection-status">
+                    <i></i>
+                    Preview mode
+                </span>
+
+                <button class="icon-button"
+                        id="clearChat"
+                        title="Clear conversation">
+                    ⌫
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONVERSATION -->
+        <section class="chat-area" id="chatArea">
+
+            <div class="welcome-state" id="welcomeState">
+
+                <div class="welcome-orbit">
+                    <div class="welcome-glow"></div>
+                    <div class="welcome-symbol">✧</div>
+                </div>
+
+                <p class="eyebrow">A QUIET PLACE TO BEGIN</p>
+
+                <h1>
+                    Hello, I'm <span>Ava.</span>
+                </h1>
+
+                <p class="welcome-description">
+                    A space to think, express yourself and explore
+                    the thoughts that make you who you are.
+                </p>
+
+                <div class="suggestion-list">
+
+                    <button class="suggestion-card">
+                        <span>✦</span>
+                        <div>
+                            <strong>Something on my mind</strong>
+                            <small>I'd like to talk about something.</small>
+                        </div>
+                    </button>
+
+                    <button class="suggestion-card">
+                        <span>♡</span>
+                        <div>
+                            <strong>How I've been feeling</strong>
+                            <small>Help me put my feelings into words.</small>
+                        </div>
+                    </button>
+
+                    <button class="suggestion-card">
+                        <span>☼</span>
+                        <div>
+                            <strong>Just a little conversation</strong>
+                            <small>Let's talk about anything.</small>
+                        </div>
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="messages-container"
+                 id="messagesContainer"
+                 aria-live="polite">
+            </div>
+
+        </section>
+
+
+        <!-- MESSAGE COMPOSER -->
+        <footer class="composer-section">
+
+            <div class="composer-wrapper">
+
+                <textarea
+                    id="messageInput"
+                    rows="1"
+                    maxlength="8000"
+                    placeholder="Share what's on your mind..."
+                    aria-label="Write a message to Ava"
+                ></textarea>
+
+                <div class="composer-bottom">
+
+                    <span class="composer-hint">
+                        Your thoughts have a place here.
+                    </span>
+
+                    <div class="composer-actions">
+
+                        <span class="character-count"
+                              id="characterCount">
+                            0 / 8000
+                        </span>
+
+                        <button class="send-button"
+                                id="sendButton"
+                                aria-label="Send message"
+                                disabled>
+                            <span>↑</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p class="privacy-note">
+                Ava is an AI companion. Avoid sharing sensitive personal information.
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<script src="{% static 'scripts/ava/app.js' %}" defer></script>
+
+</body>
+</html>

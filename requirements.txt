@@ -1,0 +1,9 @@
+asgiref==3.8.1
+backports.zoneinfo==0.2.1
+Django==4.2.30
+sqlparse==0.5.5
+typing_extensions==4.13.2
+tzdata==2026.6
+
+# My python version is 3.8 on Windows 8.0
+# Not sure if there will be compatability concerns with newer versions of django

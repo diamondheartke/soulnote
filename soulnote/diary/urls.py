@@ -35,7 +35,7 @@ urlpatterns = [
     path('archive/', archive_view, name='archive'),
 	path('entry/<uuid:entry_uuid>/history/', entry_history_view, name='entry-history'),
 	path(
-		'entry/uuid:entry_uuid>/revision/<int:revision_id>/restore/', 
+		'entry/<uuid:entry_uuid>/revision/<int:revision_id>/restore/', 
 		restore_entry_revision_view, 
 		name='restore-entry-revision'
 	),
