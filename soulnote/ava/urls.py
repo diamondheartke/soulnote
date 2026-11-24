@@ -7,4 +7,5 @@ app_name = 'ava'
 
 urlpatterns = [
 	path('', ava_chat_view, name='chat'),
+	path('<uuid:conversation_uuid>/', ava_chat_view, name='conversation'),
 ]
