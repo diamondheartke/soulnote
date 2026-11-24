@@ -1,29 +1,51 @@
 
-/* =========================================
+/* =====================================================
    AVA — INTERACTION CONTROLLER
-========================================= */
+   Django-backed conversation architecture
+===================================================== */
+
+
+/* =====================================================
+   1. DOM REFERENCES
+===================================================== */
 
 const root = document.documentElement;
+
+const messageForm = document.getElementById("messageForm");
+const messageInput = document.getElementById("messageInput");
+const sendButton = document.getElementById("sendButton");
+
+const messagesContainer = document.getElementById("messagesContainer");
+const welcomeState = document.getElementById("welcomeState");
+
+const conversationUUID = document.getElementById("conversationUUID");
+const submissionStatus = document.getElementById("submissionStatus");
+
+const conversationList = document.getElementById("conversationList");
+const chatArea = document.getElementById("chatArea");
+
+const characterCount = document.getElementById("characterCount");
 
 const themeSlider = document.getElementById("themeSlider");
 const themeDots = document.querySelectorAll(".theme-dot");
 const themeDescription = document.getElementById("themeDescription");
-
-const messageInput = document.getElementById("messageInput");
-const sendButton = document.getElementById("sendButton");
-const messagesContainer = document.getElementById("messagesContainer");
-const welcomeState = document.getElementById("welcomeState");
-
-const newChatButton = document.getElementById("newChat");
-const clearChatButton = document.getElementById("clearChat");
 
 const sidebar = document.getElementById("sidebar");
 const openSidebar = document.getElementById("openSidebar");
 const closeSidebar = document.getElementById("closeSidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 
-const conversationList = document.getElementById("conversationList");
-const characterCount = document.getElementById("characterCount");
+
+/* =====================================================
+   2. APPLICATION STATE
+===================================================== */
+
+let isSubmitting = false;
+
+
+/* =====================================================
+   3. THEME SYSTEM
+===================================================== */
 
 const themes = [
     {
@@ -40,14 +62,6 @@ const themes = [
     }
 ];
 
-let conversations = [];
-let currentConversation = [];
-let conversationNumber = 0;
-
-
-/* =========================================
-   THEME SYSTEM
-========================================= */
 
 function setTheme(index) {
 
@@ -57,19 +71,35 @@ function setTheme(index) {
 
     root.dataset.theme = selectedTheme.name;
 
-    themeSlider.value = index;
-    themeDescription.textContent = selectedTheme.description;
+    if (themeSlider) {
+        themeSlider.value = index;
+    }
+
+    if (themeDescription) {
+        themeDescription.textContent = selectedTheme.description;
+    }
 
     themeDots.forEach((dot, dotIndex) => {
         dot.classList.toggle("active", dotIndex === index);
     });
 
-    localStorage.setItem("ava-theme", selectedTheme.name);
+    try {
+        localStorage.setItem("ava-theme", selectedTheme.name);
+    } catch (error) {
+        console.warn("Ava could not save the selected theme:", error);
+    }
 }
+
 
 function loadTheme() {
 
-    const savedTheme = localStorage.getItem("ava-theme");
+    let savedTheme = null;
+
+    try {
+        savedTheme = localStorage.getItem("ava-theme");
+    } catch (error) {
+        console.warn("Ava could not access local storage:", error);
+    }
 
     const index = themes.findIndex(
         theme => theme.name === savedTheme
@@ -78,309 +108,470 @@ function loadTheme() {
     setTheme(index >= 0 ? index : 0);
 }
 
-themeSlider.addEventListener("input", event => {
-    setTheme(Number(event.target.value));
-});
+
+if (themeSlider) {
+
+    themeSlider.addEventListener("input", event => {
+        setTheme(Number(event.target.value));
+    });
+}
 
 loadTheme();
 
 
-/* =========================================
-   MESSAGE UTILITIES
-========================================= */
-
-function getCurrentTime() {
-
-    return new Intl.DateTimeFormat([], {
-        hour: "2-digit",
-        minute: "2-digit"
-    }).format(new Date());
-}
+/* =====================================================
+   4. MESSAGE RENDERING
+===================================================== */
 
 
-function createMessage(role, content) {
+function renderMessage(message) {
 
-    const row = document.createElement("div");
-
-    row.className = `message-row ${role}`;
-
-    if (role === "assistant") {
-
-        const avatar = document.createElement("div");
-
-        avatar.className = "message-avatar";
-        avatar.textContent = "✧";
-
-        row.appendChild(avatar);
-    }
-
-    const messageContent = document.createElement("div");
-    messageContent.className = "message-content";
-
-    const bubble = document.createElement("div");
-    bubble.className = "message-bubble";
-
-    // textContent prevents user messages from being interpreted as HTML.
-    bubble.textContent = content;
-
-    const time = document.createElement("span");
-    time.className = "message-time";
-    time.textContent = getCurrentTime();
-
-    messageContent.appendChild(bubble);
-    messageContent.appendChild(time);
-
-    row.appendChild(messageContent);
-
-    messagesContainer.appendChild(row);
-
-    return row;
-}
-
-
-/* =========================================
-   CONVERSATION MANAGEMENT
-========================================= */
-
-function updateConversationList() {
-
-    conversationList.innerHTML = "";
-
-    if (!conversations.length) {
-
-        const empty = document.createElement("p");
-
-        empty.className = "empty-history";
-        empty.textContent =
-            "Your conversations will appear here.";
-
-        conversationList.appendChild(empty);
+    if (!messagesContainer || !message) {
+        console.error("Cannot render message: missing container or data.");
         return;
     }
 
-    conversations.forEach(conversation => {
+    const article = document.createElement("article");
 
-        const button = document.createElement("button");
+    article.className = `message message-${message.role}`;
+    article.dataset.messageId = message.id;
+    article.dataset.role = message.role;
 
-        button.className = "conversation-item";
-        button.textContent = conversation.title;
-        button.title = conversation.title;
+    // Avatar
+    const avatar = document.createElement("div");
 
-        button.addEventListener("click", () => {
-            loadConversation(conversation.id);
-        });
+    avatar.className = "message-avatar";
 
-        conversationList.appendChild(button);
-    });
-}
+    const avatars = {
+        user: "You",
+        assistant: "✧",
+        system: "⚙",
+        tool: "◈"
+    };
 
+    avatar.textContent = avatars[message.role] || "◈";
 
-function saveCurrentConversation() {
+    // Message body
+    const body = document.createElement("div");
 
-    if (!currentConversation.length) return;
+    body.className = "message-body";
 
-    let existing = conversations.find(
-        item => item.id === conversationNumber
-    );
+    // Metadata
+    const meta = document.createElement("div");
 
-    const firstUserMessage = currentConversation.find(
-        message => message.role === "user"
-    );
+    meta.className = "message-meta";
 
-    const title = firstUserMessage
-        ? firstUserMessage.content.slice(0, 35)
-        : "New conversation";
+    const author = document.createElement("span");
 
-    if (!existing) {
+    const authorNames = {
+        user: "You",
+        assistant: "Ava",
+        system: "System",
+        tool: "Tool"
+    };
 
-        conversations.unshift({
-            id: conversationNumber,
-            title: title,
-            messages: [...currentConversation]
+    author.textContent = authorNames[message.role] || "Unknown";
+
+    const time = document.createElement("time");
+
+    const date = new Date(message.created_at);
+
+    if (!Number.isNaN(date.getTime())) {
+
+        time.dateTime = date.toISOString();
+
+        time.textContent = date.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
         });
 
     } else {
 
-        existing.title = title;
-        existing.messages = [...currentConversation];
+        time.textContent = "";
     }
 
-    updateConversationList();
-}
+    // Content
+    const content = document.createElement("div");
 
+    content.className = "message-content";
 
-function loadConversation(id) {
+    // Never interpret user content as HTML.
+    content.textContent = message.content;
 
-    const selected = conversations.find(
-        conversation => conversation.id === id
-    );
+    meta.append(author, time);
 
-    if (!selected) return;
+    body.append(meta, content);
 
-    conversationNumber = selected.id;
-    currentConversation = [...selected.messages];
+    article.append(avatar, body);
 
-    messagesContainer.innerHTML = "";
-    welcomeState.style.display = "none";
+    messagesContainer.appendChild(article);
 
-    currentConversation.forEach(message => {
-        createMessage(message.role, message.content);
-    });
-
-    closeSidebarPanel();
     scrollToLatest();
 }
 
 
-function startNewConversation() {
+/* =====================================================
+   5. CONVERSATION SIDEBAR
+===================================================== */
 
-    saveCurrentConversation();
 
-    conversationNumber++;
+function updateConversationList(conversation) {
 
-    currentConversation = [];
+    if (!conversationList || !conversation) return;
 
-    messagesContainer.innerHTML = "";
+    const existing = Array.from(
+        conversationList.querySelectorAll(".conversation-item")
+    ).find(item => {
+        return item.dataset.conversationId === conversation.uuid;
+    });
 
-    welcomeState.style.display = "flex";
+    // Remove empty history message.
+    const emptyMessage = conversationList.querySelector(".empty-history");
 
-    messageInput.value = "";
-    updateComposer();
+    if (emptyMessage) {
+        emptyMessage.remove();
+    }
 
-    saveCurrentConversation();
+    // Remove active state from other conversations.
+    conversationList.querySelectorAll(".conversation-item").forEach(item => {
+        item.classList.remove("active");
+    });
 
-    closeSidebarPanel();
+    // Existing conversation.
+    if (existing) {
+
+        existing.classList.add("active");
+
+        const title = existing.querySelector(".conversation-title");
+
+        if (title) {
+            title.textContent = conversation.title;
+        }
+
+        conversationList.prepend(existing);
+
+        return;
+    }
+
+    // New conversation.
+    const link = document.createElement("a");
+
+    link.href = conversation.url;
+    link.className = "conversation-item active";
+
+    link.dataset.conversationId = conversation.uuid;
+
+    const icon = document.createElement("span");
+
+    icon.className = "conversation-icon";
+    icon.textContent = "◈";
+
+    const title = document.createElement("span");
+
+    title.className = "conversation-title";
+    title.textContent = conversation.title;
+
+    link.append(icon, title);
+
+    conversationList.prepend(link);
 }
 
 
-function clearConversation() {
+/* =====================================================
+   6. COMPOSER MANAGEMENT
+===================================================== */
 
-    currentConversation = [];
-
-    messagesContainer.innerHTML = "";
-
-    welcomeState.style.display = "flex";
-
-    saveCurrentConversation();
-
-    messageInput.value = "";
-    updateComposer();
-}
-
-
-/* =========================================
-   CHAT COMPOSITION
-========================================= */
 
 function updateComposer() {
 
-    const length = messageInput.value.length;
+    if (!messageInput || !sendButton) return;
 
-    characterCount.textContent = `${length} / 8000`;
+    const value = messageInput.value;
 
-    sendButton.disabled = !messageInput.value.trim();
+    // Optional character counter.
+    if (characterCount) {
+        characterCount.textContent = `${value.length}/8000`;
+    }
 
+    sendButton.disabled = (
+        value.trim().length === 0 || isSubmitting
+    );
+
+    // Auto-resize textarea.
     messageInput.style.height = "auto";
 
     messageInput.style.height =
-        Math.min(messageInput.scrollHeight, 150) + "px";
+        `${messageInput.scrollHeight}px`;
 }
 
 
-messageInput.addEventListener("input", updateComposer);
+function setSubmissionStatus(message, isError = false) {
+
+    if (!submissionStatus) return;
+
+    submissionStatus.textContent = message;
+
+    submissionStatus.dataset.state = isError
+        ? "error"
+        : "normal";
+}
 
 
-messageInput.addEventListener("keydown", event => {
+/* =====================================================
+   7. CSRF PROTECTION
+===================================================== */
 
-    if (event.key === "Enter" && !event.shiftKey) {
 
-        event.preventDefault();
+function getCSRFToken() {
 
-        sendMessage();
+    const csrfInput = messageForm
+        ? messageForm.querySelector('[name="csrfmiddlewaretoken"]')
+        : null;
+
+    return csrfInput ? csrfInput.value : null;
+}
+
+
+/* =====================================================
+   8. SERVER RESPONSE HANDLING
+===================================================== */
+
+
+async function parseResponse(response) {
+
+    const contentType = response.headers.get("content-type") || "";
+
+    if (!contentType.includes("application/json")) {
+
+        const responseText = await response.text();
+
+        console.error(
+            "Unexpected server response:",
+            response.status,
+            responseText
+        );
+
+        throw new Error(
+            response.status === 403
+                ? "Request rejected. Check Django CSRF protection."
+                : `Server returned an unexpected response (${response.status}).`
+        );
     }
-});
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+
+        const errors = data.errors
+            ? Object.values(data.errors)
+                .flat()
+                .map(error => error.message)
+                .join(" ")
+            : data.error || data.message || "Message submission failed.";
+
+        throw new Error(errors);
+    }
+
+    if (!data.message || !data.conversation) {
+        throw new Error("The server returned incomplete conversation data.");
+    }
+
+    return data;
+}
 
 
-function sendMessage() {
+/* =====================================================
+   9. MESSAGE SUBMISSION
+===================================================== */
+
+
+async function submitMessage(event) {
+
+    event.preventDefault();
+
+    if (
+        !messageForm ||
+        !messageInput ||
+        !sendButton ||
+        isSubmitting
+    ) {
+        return;
+    }
 
     const content = messageInput.value.trim();
 
     if (!content) return;
 
-    welcomeState.style.display = "none";
+    if (content.length > 8000) {
+        setSubmissionStatus(
+            "Your message exceeds the 8000-character limit.",
+            true
+        );
+        return;
+    }
 
-    currentConversation.push({
-        role: "user",
-        content: content
-    });
-
-    createMessage("user", content);
-
-    messageInput.value = "";
+    isSubmitting = true;
 
     updateComposer();
 
-    /*
-       PREVIEW MODE
+    setSubmissionStatus("Saving your message...");
 
-       This is where we will later call Ava's inference API.
+    try {
 
-       The UI does not yet communicate with the model.
-       Replace this preview response with the real API response
-       when the Colab server and ngrok tunnel are configured.
-    */
+        const formData = new FormData(messageForm);
 
-    const previewResponse =
-        "This is the interface preview. Ava's model connection " +
-        "has not been configured yet. Your message has been " +
-        "added to this temporary conversation.";
+        // Ensure the latest textarea value is submitted.
+        formData.set("user_input", content);
 
-    currentConversation.push({
-        role: "assistant",
-        content: previewResponse
-    });
+        // Explicit CSRF header.
+        const csrfToken = getCSRFToken();
 
-    createMessage("assistant", previewResponse);
+        const headers = {
+            "X-Requested-With": "XMLHttpRequest"
+        };
 
-    saveCurrentConversation();
+        if (csrfToken) {
+            headers["X-CSRFToken"] = csrfToken;
+        }
 
-    scrollToLatest();
+        const response = await fetch(messageForm.action, {
+            method: "POST",
+            body: formData,
+            headers: headers,
+            credentials: "same-origin"
+        });
+
+        const data = await parseResponse(response);
+
+        // Update the conversation UUID returned by Django.
+        if (conversationUUID) {
+            conversationUUID.value = data.conversation.uuid;
+        }
+
+        messageForm.dataset.conversationUuid =
+            data.conversation.uuid;
+
+        // Render the message only after the server confirms success.
+        renderMessage(data.message);
+
+        // Update conversation history.
+        updateConversationList(data.conversation);
+
+        // Remove welcome screen.
+        if (welcomeState) {
+            welcomeState.remove();
+        }
+
+        // Update browser URL.
+        if (data.conversation.url) {
+
+            window.history.replaceState(
+                {},
+                "",
+                data.conversation.url
+            );
+        }
+
+        // Clear the composer after successful persistence.
+        messageInput.value = "";
+
+        setSubmissionStatus("");
+
+    } catch (error) {
+
+        console.error("Ava submission error:", error);
+
+        setSubmissionStatus(
+            error.message || "An unexpected error occurred.",
+            true
+        );
+
+    } finally {
+
+        isSubmitting = false;
+
+        updateComposer();
+
+        messageInput.focus();
+    }
 }
 
 
-function scrollToLatest() {
+/* =====================================================
+   10. MESSAGE FORM EVENTS
+===================================================== */
 
-    const chatArea = document.getElementById("chatArea");
 
-    requestAnimationFrame(() => {
-        chatArea.scrollTop = chatArea.scrollHeight;
+if (messageForm) {
+    messageForm.addEventListener("submit", submitMessage);
+}
+
+
+if (messageInput) {
+
+    messageInput.addEventListener("input", updateComposer);
+
+    // Enter submits.
+    // Shift + Enter inserts a new line.
+    messageInput.addEventListener("keydown", event => {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey &&
+            !event.isComposing
+        ) {
+
+            event.preventDefault();
+
+            if (!isSubmitting && sendButton && !sendButton.disabled) {
+
+                if (messageForm.requestSubmit) {
+                    messageForm.requestSubmit();
+                } else {
+                    // Fallback for older browsers.
+                    messageForm.dispatchEvent(
+                        new Event("submit", {
+                            bubbles: true,
+                            cancelable: true
+                        })
+                    );
+                }
+            }
+        }
     });
 }
 
 
-/* =========================================
-   SUGGESTION PROMPTS
-========================================= */
+/* =====================================================
+   11. SUGGESTION PROMPTS
+===================================================== */
+
+
+const suggestionPrompts = {
+
+    "Something on my mind":
+        "There's something on my mind that I'd like to talk about.",
+
+    "How I've been feeling":
+        "I've been thinking about how I've been feeling lately.",
+
+    "Just a little conversation":
+        "I'd like to have a little conversation with you."
+};
+
 
 document.querySelectorAll(".suggestion-card").forEach(card => {
 
     card.addEventListener("click", () => {
 
-        const prompt = card.querySelector("strong").textContent;
+        const heading = card.querySelector("strong");
 
-        const prompts = {
-            "Something on my mind":
-                "There's something on my mind that I'd like to talk about.",
+        if (!heading || !messageInput) return;
 
-            "How I've been feeling":
-                "I've been thinking about how I've been feeling lately.",
-
-            "Just a little conversation":
-                "I'd like to have a little conversation with you."
-        };
+        const prompt = heading.textContent.trim();
 
         messageInput.value =
-            prompts[prompt] || prompt;
+            suggestionPrompts[prompt] || prompt;
 
         updateComposer();
 
@@ -389,36 +580,77 @@ document.querySelectorAll(".suggestion-card").forEach(card => {
 });
 
 
-/* =========================================
-   SIDEBAR CONTROLS
-========================================= */
+/* =====================================================
+   12. SIDEBAR CONTROLS
+===================================================== */
+
 
 function closeSidebarPanel() {
 
-    sidebar.classList.remove("open");
-    sidebarOverlay.classList.remove("active");
+    if (sidebar) {
+        sidebar.classList.remove("open");
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.classList.remove("active");
+    }
 }
 
-openSidebar.addEventListener("click", () => {
 
-    sidebar.classList.add("open");
-    sidebarOverlay.classList.add("active");
-});
+if (openSidebar) {
 
-closeSidebar.addEventListener("click", closeSidebarPanel);
+    openSidebar.addEventListener("click", () => {
 
-sidebarOverlay.addEventListener("click", closeSidebarPanel);
+        if (sidebar) {
+            sidebar.classList.add("open");
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.add("active");
+        }
+    });
+}
 
 
-newChatButton.addEventListener("click", startNewConversation);
+if (closeSidebar) {
+    closeSidebar.addEventListener("click", closeSidebarPanel);
+}
 
-clearChatButton.addEventListener("click", clearConversation);
+
+if (sidebarOverlay) {
+    sidebarOverlay.addEventListener("click", closeSidebarPanel);
+}
 
 
-/* =========================================
-   INITIALIZATION
-========================================= */
+/* =====================================================
+   13. SCROLL MANAGEMENT
+===================================================== */
 
-updateConversationList();
+
+function scrollToLatest() {
+
+    if (!chatArea) return;
+
+    requestAnimationFrame(() => {
+
+        chatArea.scrollTo({
+            top: chatArea.scrollHeight,
+            behavior: "smooth"
+        });
+    });
+}
+
+
+/* =====================================================
+   14. INITIALIZATION
+===================================================== */
+
 
 updateComposer();
+
+if (
+    messagesContainer &&
+    messagesContainer.children.length > 0
+) {
+    scrollToLatest();
+}

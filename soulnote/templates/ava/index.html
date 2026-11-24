@@ -132,13 +132,13 @@
 
         <div class="sidebar-footer">
             <div class="footer-avatar">
-				{{ user.username|first|upper }}
-			</div>
+			{{ user.username|first|upper }}
+		</div>
 
-			<div class="footer-user">
-				<strong>{{ user.username }}</strong>
-				<span>Your personal space</span>
-			</div>
+		<div class="footer-user">
+			<strong>{{ user.username }}</strong>
+			<span>Your personal space</span>
+		</div>
 
             <button class="icon-button" title="Settings">
                 ⚙
@@ -305,40 +305,41 @@
 
         <!-- MESSAGE COMPOSER -->
         <footer class="composer-section">
-
             <div class="composer-wrapper">
+                <form
+					id="messageForm"
+					class="composer"
+					method="POST"
+					action="{% url 'ava:submit-message' %}"
+					data-conversation-uuid="{% if active_conversation %}{{ active_conversation.conversation_uuid }}{% endif %}"
+				>
+					{% csrf_token %}
 
-                <textarea
-                    id="messageInput"
-                    rows="1"
-                    maxlength="8000"
-                    placeholder="Share what's on your mind..."
-                    aria-label="Write a message to Ava"
-                ></textarea>
+					<input
+						type="hidden"
+						name="conversation_uuid"
+						id="conversationUUID"
+						value="{% if active_conversation %}{{ active_conversation.conversation_uuid }}{% endif %}"
+					>
 
-                <div class="composer-bottom">
+					<textarea
+						id="messageInput"
+						name="user_input"
+						maxlength="8000"
+						placeholder="Pour your thoughts, she's listening"
+						required
+					></textarea>
 
-                    <span class="composer-hint">
-                        Your thoughts have a place here.
-                    </span>
+					<button
+						type="submit"
+						id="sendButton"
+						disabled
+					>
+						Send
+					</button>
 
-                    <div class="composer-actions">
-
-                        <span class="character-count"
-                              id="characterCount">
-                            0 / 8000
-                        </span>
-
-                        <button class="send-button"
-                                id="sendButton"
-                                aria-label="Send message"
-                                disabled>
-                            <span>↑</span>
-                        </button>
-
-                    </div>
-
-                </div>
+					<p id="submissionStatus" role="status"></p>
+				</form>
 
             </div>
 
