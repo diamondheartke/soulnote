@@ -36,10 +36,10 @@
                 ×
             </button>
 
-            <button class="new-chat-button" id="newChat">
-                <span>＋</span>
-                New conversation
-            </button>
+            <a href="{% url 'ava:chat' %}" class="new-chat-button" id="newChat">
+				<span>＋</span>
+				New conversation
+			</a>
 
             <div class="sidebar-section">
                 <p class="sidebar-label">YOUR SPACE</p>
@@ -58,11 +58,34 @@
             <div class="conversation-section">
                 <p class="sidebar-label">RECENT</p>
 
-                <div class="conversation-list" id="conversationList">
-                    <p class="empty-history">
-                        Your conversations will appear here.
-                    </p>
-                </div>
+                
+				<div class="conversation-list" id="conversationList">
+
+					{% for conversation in conversations %}
+
+						<a
+							href="{% url 'ava:conversation' conversation.conversation_uuid %}"
+							class="conversation-item {% if active_conversation.id == conversation.id %}active{% endif %}"
+							data-conversation-id="{{ conversation.conversation_uuid }}"
+						>
+							<span class="conversation-icon">◈</span>
+
+							<span class="conversation-title">
+								{{ conversation.title }}
+							</span>
+
+						</a>
+
+					{% empty %}
+
+						<p class="empty-history">
+							Your conversations will appear here.
+						</p>
+
+					{% endfor %}
+
+				</div>
+
             </div>
 
         </div>
@@ -108,12 +131,14 @@
         </div>
 
         <div class="sidebar-footer">
-            <div class="footer-avatar">D</div>
+            <div class="footer-avatar">
+				{{ user.username|first|upper }}
+			</div>
 
-            <div class="footer-user">
-                <strong>SoulNote</strong>
-                <span>Your personal space</span>
-            </div>
+			<div class="footer-user">
+				<strong>{{ user.username }}</strong>
+				<span>Your personal space</span>
+			</div>
 
             <button class="icon-button" title="Settings">
                 ⚙
@@ -168,7 +193,7 @@
 
         <!-- CONVERSATION -->
         <section class="chat-area" id="chatArea">
-
+			{% if not messages %}
             <div class="welcome-state" id="welcomeState">
 
                 <div class="welcome-orbit">
@@ -216,12 +241,64 @@
                 </div>
 
             </div>
+            {% endif %}
 
 
-            <div class="messages-container"
-                 id="messagesContainer"
-                 aria-live="polite">
-            </div>
+            
+			<div class="messages-container"
+				 id="messagesContainer"
+				 aria-live="polite">
+
+				{% for message in messages %}
+
+					<article
+						class="message message-{{ message.role }}"
+						data-message-id="{{ message.id }}"
+						data-role="{{ message.role }}"
+					>
+
+						<div class="message-avatar">
+
+							{% if message.role == 'assistant' %}
+								✧
+							{% elif message.role == 'user' %}
+								{{ user.username|first|upper }}
+							{% elif message.role == 'system' %}
+								⚙
+							{% else %}
+								◈
+							{% endif %}
+
+						</div>
+
+						<div class="message-body">
+
+							<div class="message-meta">
+								{% if message.role == 'assistant' %}
+									Ava
+								{% elif message.role == 'user' %}
+									{{ user.username }}
+								{% elif message.role == 'system' %}
+									System
+								{% else %}
+									Tool
+								{% endif %}
+
+								<time datetime="{{ message.created_at|date:'c' }}">
+									{{ message.created_at|date:'H:i' }}
+								</time>
+							</div>
+
+							<div class="message-content">{{ message.content }}</div>
+
+						</div>
+
+					</article>
+
+				{% endfor %}
+
+			</div>
+
 
         </section>
 
