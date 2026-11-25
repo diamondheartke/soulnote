@@ -5,6 +5,7 @@ C:.
 |   apps.py
 |   forms.py
 |   models.py
+|   repositories.py
 |   tests.py
 |   tree.txt
 |   urls.py
@@ -12,9 +13,38 @@ C:.
 |   __init__.py
 |   
 +---api
-|       db_manage.py
+|   |   urls.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           db_manage.cpython-38.pyc
+|           repositories.cpython-38.pyc
+|           __init__.cpython-38.pyc
+|           
++---experiments
+|       001.txt
 |       
 +---migrations
+|   |   0001_initial.py
+|   |   __init__.py
+|   |   
+|   \---__pycache__
+|           0001_initial.cpython-38.pyc
+|           __init__.cpython-38.pyc
+|           
++---services
+|   |   ai_service.py
+|   |   conversation_service.py
+|   |   
+|   \---__pycache__
+|           ai_service.cpython-38.pyc
+|           conversation_service.cpython-38.pyc
+|           
++---tests
+|   |   ava_conversation_test.py
+|   |   ngrok_test.py
+|   |   tunnel_test.py
+|   |   variables_test.py
 |   |   __init__.py
 |   |   
 |   \---__pycache__
@@ -23,7 +53,10 @@ C:.
 \---__pycache__
         admin.cpython-38.pyc
         apps.cpython-38.pyc
+        forms.cpython-38.pyc
         models.cpython-38.pyc
+        repositories.cpython-38.pyc
+        tests.cpython-38.pyc
         urls.cpython-38.pyc
         views.cpython-38.pyc
         __init__.cpython-38.pyc

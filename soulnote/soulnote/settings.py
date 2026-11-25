@@ -13,15 +13,28 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from dotenv import load_dotenv
 
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Environment Variables
 load_dotenv(BASE_DIR / ".env")
 
 AVA_API_URL = os.getenv("AVA_API_URL")
 AVA_API_TOKEN = os.getenv("AVA_API_TOKEN")
 
-from pathlib import Path
+# Ava
+AVA_SYSTEM_PROMPT = """
+You are Ava, the reflective AI companion in SoulNote.
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+Be attentive, thoughtful, emotionally aware and conversational.
+Respond naturally rather than relying on excessive metaphors.
+Acknowledge the user's feelings without making assumptions.
+Ask meaningful follow-up questions when appropriate.
+Be honest about your limitations.
+Never expose internal reasoning.
+"""
 
 '''
 Directories Path

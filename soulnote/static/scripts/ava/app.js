@@ -1,4 +1,3 @@
-
 /* =====================================================
    AVA — INTERACTION CONTROLLER
    Django-backed conversation architecture
@@ -128,6 +127,16 @@ function renderMessage(message) {
 
     if (!messagesContainer || !message) {
         console.error("Cannot render message: missing container or data.");
+        return;
+    }
+
+    // Avoid duplicate bubbles if a message has already been rendered.
+    if (
+        message.id !== undefined &&
+        messagesContainer.querySelector(
+            `[data-message-id="${String(message.id)}"]`
+        )
+    ) {
         return;
     }
 
@@ -369,11 +378,22 @@ async function parseResponse(response) {
                 .join(" ")
             : data.error || data.message || "Message submission failed.";
 
-        throw new Error(errors);
+        const error = new Error(errors);
+
+        // Preserve partial data when the user's message was saved.
+        error.payload = data;
+
+        throw error;
     }
 
-    if (!data.message || !data.conversation) {
-        throw new Error("The server returned incomplete conversation data.");
+    if (
+        !data.message ||
+        !data.assistant_message ||
+        !data.conversation
+    ) {
+        throw new Error(
+            "The server returned incomplete conversation data."
+        );
     }
 
     return data;
@@ -414,7 +434,7 @@ async function submitMessage(event) {
 
     updateComposer();
 
-    setSubmissionStatus("Saving your message...");
+    setSubmissionStatus("Ava is thinking...");
 
     try {
 
@@ -451,8 +471,9 @@ async function submitMessage(event) {
         messageForm.dataset.conversationUuid =
             data.conversation.uuid;
 
-        // Render the message only after the server confirms success.
+        // Render both persisted messages immediately.
         renderMessage(data.message);
+        renderMessage(data.assistant_message);
 
         // Update conversation history.
         updateConversationList(data.conversation);
@@ -480,6 +501,50 @@ async function submitMessage(event) {
     } catch (error) {
 
         console.error("Ava submission error:", error);
+
+        // Handle cases where the user's message was saved
+        // but Ava could not generate a response.
+        const payload = error.payload;
+
+        if (payload) {
+
+            if (payload.conversation) {
+
+                if (conversationUUID) {
+                    conversationUUID.value = payload.conversation.uuid;
+                }
+
+                messageForm.dataset.conversationUuid =
+                    payload.conversation.uuid;
+
+                updateConversationList(payload.conversation);
+
+                if (payload.conversation.url) {
+                    window.history.replaceState(
+                        {},
+                        "",
+                        payload.conversation.url
+                    );
+                }
+            }
+
+            if (payload.message && messagesContainer) {
+
+                const alreadyRendered = Array.from(
+                    messagesContainer.children
+                ).some(element =>
+                    element.dataset.messageId === String(payload.message.id)
+                );
+
+                if (!alreadyRendered) {
+                    renderMessage(payload.message);
+                }
+
+                if (welcomeState) {
+                    welcomeState.remove();
+                }
+            }
+        }
 
         setSubmissionStatus(
             error.message || "An unexpected error occurred.",
@@ -642,7 +707,45 @@ function scrollToLatest() {
 
 
 /* =====================================================
-   14. INITIALIZATION
+   14. NAVIGATION CONTROLS
+===================================================== */
+
+
+const clearChatButton = document.getElementById("clearChat");
+const newChatLink = document.getElementById("newChat");
+const historyButton = document.getElementById("historyButton");
+
+
+if (clearChatButton && newChatLink) {
+
+    clearChatButton.addEventListener("click", () => {
+        window.location.href = newChatLink.href;
+    });
+}
+
+
+if (historyButton && conversationList) {
+
+    historyButton.addEventListener("click", () => {
+
+        if (
+            window.matchMedia("(max-width: 768px)").matches &&
+            sidebar &&
+            !sidebar.classList.contains("open")
+        ) {
+            openSidebar?.click();
+        }
+
+        conversationList.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+    });
+}
+
+
+/* =====================================================
+   15. INITIALIZATION
 ===================================================== */
 
 

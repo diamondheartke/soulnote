@@ -25,10 +25,15 @@
 
         <div class="sidebar-top">
 
-            <a href="#" class="brand">
-                <span class="brand-symbol">✦</span>
-                <span>SoulNote</span>
-            </a>
+            <a href="{% url 'home' %}" class="brand">
+				<span class="brand-symbol">✦</span>
+				<span>SoulNote</span>
+			</a>
+
+			<a href="{% url 'home' %}" class="sidebar-link back-home-button">
+				<span>←</span>
+				<span>Back to SoulNote</span>
+			</a>
 
             <button class="icon-button mobile-close"
                     id="closeSidebar"
@@ -177,14 +182,14 @@
 
                 <span class="connection-status">
                     <i></i>
-                    Preview mode
+                    Conversation mode
                 </span>
 
                 <button class="icon-button"
-                        id="clearChat"
-                        title="Clear conversation">
-                    ⌫
-                </button>
+						id="clearChat"
+						title="Start a new conversation">
+					＋
+				</button>
 
             </div>
 
